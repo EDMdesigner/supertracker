@@ -9,6 +9,7 @@ module.exports = function (app, options) {
 	var mwAuth			= options.mwAuth;
 	var corsOptions     = options.corsOptions;
 
+	app.options(stpath+"/sessions" , cors(options.corsOptions));
 	app.post(stpath+"/sessions", cors(corsOptions), function(req, res) {
 
 		var refererParser = require('referer-parser');

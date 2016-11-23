@@ -10,6 +10,7 @@ module.exports = function(app, options) {
 	var mwAuth			= options.mwAuth;
 	var corsOptions     = options.corsOptions;
 
+	app.options(stpath+"/users" , cors(options.corsOptions));
 	app.post(stpath+"/users", cors(corsOptions), postUsers); // put user to db
 
 	// function getUsers(req, res) {

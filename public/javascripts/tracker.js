@@ -6,8 +6,9 @@
 
 function supertracker() {
 
-	var bufferSize = %bufferSize%; 
-	var bufferTimeLimit = %bufferTimeLimit%; 
+	var bufferSize = 5; 
+	var bufferTimeLimit = 500;
+	var basePath;
 	// Session wide event data
 	var sessionId, userId, trackId;
 	var flushingLoop;
@@ -16,24 +17,32 @@ function supertracker() {
 	var initiated = false;
 	var storage = checkStorage();
 	var evBuffer = eventBuffer();
+	var origCallback;
 
 	// Init function
-	function init (options) {
-		// userId  = '%userId%';
+	function init (config, callback) {
+		origCallback = callback;
+		bufferSize = config.bufferSize || bufferSize;
+		bufferTimeLimit = config.bufferTimeLimit || bufferTimeLimit;
+		if (!config.basePath) {
+			return console.log("SUPERTARCKER ERROR: No basePath given, could not init the tracker!");
+		}
+		basePath = config.basePath;
+
 		referrer = document.referrer;
 		date = new Date();
 
-        // Getting the current domain
-        var arrDomain = document.domain.split(".");
-        var domain = null;
-        if (arrDomain.length === 1){
-        	domain = null;
-        } else {
-        	domain = "." + arrDomain[arrDomain.length -2] + "." + arrDomain[arrDomain.length - 1];
-        }
+		// Getting the current domain
+		var arrDomain = document.domain.split(".");
+		var domain = null;
+		if (arrDomain.length === 1){
+			domain = null;
+		} else {
+			domain = "." + arrDomain[arrDomain.length -2] + "." + arrDomain[arrDomain.length - 1];
+		}
 
 		if (storage) {
-	    	trackId = getCookie("supertrackerTrackId");
+			trackId = getCookie("supertrackerTrackId");
 		} else {
 			trackId = null;			
 		}
@@ -55,15 +64,15 @@ function supertracker() {
 			sessionId = sessionStorage.supertrackerSessionId;
 			// console.log('Sessionstorage on');
 			initiated = true;
-			onInit();
+			onInit(callback);
 		} else {
-			// getScript("%path%/javascripts/geoip2.js", function(){
+			// getScript(basePath + "/javascripts/geoip2.js", function(){
 				// geoip2.city(function (resCity) {
 					
 					// console.log('Sessionstorage off');
 					var session = {};
-					if (options.properties) {
-						session.properties = options.properties;
+					if (config.properties) {
+						session.properties = config.properties;
 					}
 					if (!storage) {
 						if (session.properties) {
@@ -92,7 +101,7 @@ function supertracker() {
 
 
 					var xhr = new XMLHttpRequest();
-					xhr.open('POST', '%path%/sessions');
+					xhr.open('POST', basePath + '/sessions');
 					xhr.setRequestHeader('Content-Type', 'application/json');
 					xhr.onload = function() {
 					    if (xhr.status === 200) {
@@ -105,7 +114,7 @@ function supertracker() {
 					        	alert(res.errorMessage);
 					        }
 					        initiated = true;
-							onInit();
+							onInit(callback);
 					    } else {
 					    	console.log("session_post_error");
 					    }
@@ -120,8 +129,8 @@ function supertracker() {
 			flushingLoop = setInterval(flush, bufferTimeLimit);
 	}
 
-	function onInit () {
-		
+	function onInit (callback) {
+		callback();
 	}
 
 	function track(eventName, properties, comment, callback) {
@@ -163,13 +172,6 @@ function supertracker() {
 				callback = args.shift();
 			}
 		}
-		// console.log("XXXX");
-		// console.log("eventName: " + eventName);
-		// console.log("properties: " + properties);
-		// console.log("comment: " + comment);
-		// console.log("callback: " + callback);
-		// console.log("}");
-
 
 		if (initiated) {
 			// Preparing data
@@ -199,7 +201,7 @@ function supertracker() {
 		} else {
 			var origOnInit = onInit;
 			onInit = function () {
-				origOnInit();
+				origOnInit(origCallback);
 				track(eventName, properties, comment, callback);
 			};
 		}
@@ -208,7 +210,7 @@ function supertracker() {
 	function flush (callback) {
 		if (evBuffer.getLength() > 0) {
 			var xhr = new XMLHttpRequest();
-			xhr.open('POST', '%path%/events');
+			xhr.open('POST', basePath + '/events');
 			xhr.setRequestHeader('Content-Type', 'application/json');
 			xhr.onload = function() {
 			    if (xhr.status === 200) {
@@ -231,14 +233,6 @@ function supertracker() {
 
 	function identify(extUserId, extFlag, callback) { //ttt flushing mechanism
 
-		// console.log("TRACK:");
-		// console.log(arguments);
-		// console.log("{");
-		// console.log("eventName: " + eventName);
-		// console.log("properties: " + properties);
-		// console.log("comment: " + comment);
-		// console.log("callback: " + callback);
-
 		var args = [];
 		for (var i = 0; i < arguments.length; i++) {
 		    args.push(arguments[i]);
@@ -260,13 +254,6 @@ function supertracker() {
 				callback = args.shift();
 			}
 		}
-		// console.log("XXXX");
-		// console.log("eventName: " + eventName);
-		// console.log("properties: " + properties);
-		// console.log("comment: " + comment);
-		// console.log("callback: " + callback);
-		// console.log("}");
-
 
 		var user = {
 			"track_id": trackId,
@@ -274,7 +261,7 @@ function supertracker() {
 			"external_flag": extFlag
 		};
 		var xhr = new XMLHttpRequest();
-		xhr.open('POST', '%path%/users');
+		xhr.open('POST', basePath + '/users');
 		xhr.setRequestHeader('Content-Type', 'application/json');
 		xhr.onload = function() {
 			if (xhr.status === 200) {
