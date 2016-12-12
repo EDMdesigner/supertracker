@@ -1,14 +1,16 @@
 {
   "name": "supertracker",
   
-  "version": "0.0.52",
+  "version": "0.0.53",
+  "clientVersion": "0.0.1",
   "description": "A super package for tracking and visualising user activity",
   "main": "./lib/supertracker.js",
   "bin": {
     "supertracker": "./bin/supertracker"
   },
   "scripts": {
-    "test": "echo \"test\""
+    "test": "echo \"test\"",
+    "buildClient": "browserify public/javascripts/tracker.js --standalone supertracker > ../supertracker.min.0.0.1.js"
   },
   "repository": {
     "type": "git",

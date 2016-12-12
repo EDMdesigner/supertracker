@@ -51,7 +51,9 @@ module.exports = function(app, options) {
 	app.post(stpath+"/funnels/apply", function (req, res) {
 
 		// console.log(req.body.funnel);
-		var sessionProperties = JSON.parse(req.body.funnel.sessionProperties);
+		var sessionProperties = {
+			properties: JSON.parse(req.body.funnel.sessionProperties)
+		};
 
 		var dateFrom = new Date(req.body.funnel.dateFrom);
 		var dateTo = new Date(req.body.funnel.dateTo);
@@ -178,6 +180,7 @@ module.exports = function(app, options) {
 
 		console.log("ST: FUNNEL");
 		console.log("events", events);
+		console.log("sessionProperties", sessionProperties.properties);
 		process.stdout.write("Map function:    ");
 		console.log(options.map);
 		process.stdout.write("Reduce function: ");
