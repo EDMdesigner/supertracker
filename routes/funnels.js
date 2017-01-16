@@ -51,8 +51,17 @@ module.exports = function(app, options) {
 	app.post(stpath+"/funnels/apply", function (req, res) {
 
 		// console.log(req.body.funnel);
+
+		var reqSessionProperties;
+
+		try {
+			reqSessionProperties = JSON.parse(req.body.funnel.sessionProperties);
+		} catch(e) {
+			return res.send({err: "Could not parse sessionProperties json"});
+		}
+
 		var sessionProperties = {
-			properties: JSON.parse(req.body.funnel.sessionProperties)
+			properties: reqSessionProperties
 		};
 
 		var dateFrom = new Date(req.body.funnel.dateFrom);

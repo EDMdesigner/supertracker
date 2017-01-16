@@ -9,8 +9,7 @@
     "supertracker": "./bin/supertracker"
   },
   "scripts": {
-    "test": "echo \"test\"",
-    "buildClient": "browserify public/javascripts/tracker.js --standalone supertracker > ../supertracker.min.0.0.1.js"
+    "test": "echo \"test\""
   },
   "repository": {
     "type": "git",
