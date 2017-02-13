@@ -1,6 +1,5 @@
 {
   "name": "supertracker",
-  
   "version": "0.0.53",
   "clientVersion": "0.0.1",
   "description": "A super package for tracking and visualising user activity",
@@ -36,5 +35,20 @@
   "bugs": {
     "url": "https://github.com/arnolduis/supertracker/issues"
   },
-  "homepage": "https://github.com/arnolduis/supertracker"
+  "homepage": "https://github.com/arnolduis/supertracker",
+  "devDependencies": {
+    "browserify": "^14.0.0",
+    "gulp": "^3.9.1",
+    "gulp-build-branch": "^0.1.4",
+    "gulp-change": "^1.0.0",
+    "gulp-git": "^1.14.0",
+    "gulp-istanbul": "^1.1.1",
+    "gulp-jasmine": "^2.4.2",
+    "gulp-jscs": "^4.0.0",
+    "gulp-jscs-stylish": "^1.4.0",
+    "gulp-jshint": "^2.0.4",
+    "gulp-jsonlint": "^1.2.0",
+    "jshint": "^2.9.4",
+    "vinyl-source-stream": "^1.1.0"
+  }
 }

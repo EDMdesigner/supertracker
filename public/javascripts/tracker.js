@@ -500,4 +500,6 @@ function eventBuffer (storage) {
 	};
 }
 
+window.supertracker = supertracker;
+
 module.exports = supertracker;
