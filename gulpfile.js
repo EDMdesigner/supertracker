@@ -55,7 +55,7 @@ gulp.task("jscs", function() {
 		.pipe(jscs.reporter("fail"));
 });
 
-gulp.task("stage", ["test", "build:prod", "stage:example"], function() {
+gulp.task("stage", ["build:prod"], function() {
 	buildBranch({ folder: "dist", branch: "gh-pages" });
 	git.push("origin", ["gh-pages"], {}, function (err) {
 		if (err) {
